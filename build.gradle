@@ -2,13 +2,21 @@ group 'com.yaegar.books'
 version '1.0.0-SNAPSHOT'
 
 apply plugin: 'java'
+apply plugin: 'idea'
+
+apply from: 'test.gradle'
+apply from: 'dependencies.gradle'
 
 sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 repositories {
     mavenCentral()
+    maven {
+        url 'https://s3.eu-central-1.amazonaws.com/dynamodb-local-frankfurt/release'
+    }
 }
 
-dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.2.1'
 }
