@@ -18,5 +18,22 @@ repositories {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '4.2.1'
+    gradleVersion = '4.4.1'
 }
+
+task buildZip(type: Zip) {
+    dependsOn integrationTest
+
+    from compileJava
+    from processResources
+    into('lib') {
+        from configurations.runtime
+    }
+}
+
+build {
+    dependsOn buildZip
+    dependsOn('stacks:genStacks')
+}
+
+clean.dependsOn('stacks:cleanStacks')
