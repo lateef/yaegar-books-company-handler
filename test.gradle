@@ -5,6 +5,7 @@ sourceSets {
             compileClasspath += main.output + test.output
             runtimeClasspath += main.output + test.output
             srcDir file('src/integration-test/java')
+            srcDir file('build/generated/source/apt/integrationTest')
         }
         resources.srcDir file('src/integration-test/resources')
     }

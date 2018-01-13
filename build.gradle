@@ -1,5 +1,9 @@
-group 'com.yaegar.books'
+plugins {
+    id "net.ltgt.apt" version "0.10"
+}
+
 version '1.0.0-SNAPSHOT'
+group 'com.yaegar.books'
 
 apply plugin: 'java'
 apply plugin: 'idea'
@@ -19,6 +23,14 @@ repositories {
 
 task wrapper(type: Wrapper) {
     gradleVersion = '4.4.1'
+}
+
+configurations {
+    apt
+}
+
+compileIntegrationTestJava {
+    options.annotationProcessorPath = configurations.apt
 }
 
 task buildZip(type: Zip) {
