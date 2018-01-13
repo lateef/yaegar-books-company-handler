@@ -13,14 +13,11 @@ import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 
-import java.util.UUID;
-
 import static org.junit.Assert.assertEquals;
 
 public class CompanyStepDef {
 
     private DynamoDBMapper dynamoDBMapper;
-    private String uuid = UUID.randomUUID().toString();
     private Company company;
 
     @Before
@@ -36,7 +33,6 @@ public class CompanyStepDef {
     @Given("^i create a company name with name (\\w+)")
     public void iCreateACompanyWithAName(String name) throws Throwable {
         company = new Company();
-        company.setUuid(uuid);
         company.setName(name);
     }
 
@@ -48,7 +44,7 @@ public class CompanyStepDef {
 
     @Then("^i should have a company with name (\\w+) saved in the database$")
     public void iShouldHaveACompanySavedInTheDatabase(String name) throws Throwable {
-        Company actualCompany = dynamoDBMapper.load(Company.class, uuid, name);
-        assertEquals(uuid, actualCompany.getUuid());
+        Company actualCompany = dynamoDBMapper.load(Company.class, company.getUuid(), name);
+        assertEquals(company.getUuid(), actualCompany.getUuid());
     }
 }

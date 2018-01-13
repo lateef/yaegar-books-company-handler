@@ -8,8 +8,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.UUID;
-
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -28,11 +26,9 @@ public class CompanyDaoImplTest {
     @Test
     public void shouldSaveCompany() {
         //arrange
-        String uuid = UUID.randomUUID().toString();
         String name = "Yaegar";
 
         Company company = new Company();
-        company.setUuid(uuid);
         company.setName(name);
         doNothing().when(dynamoDBMapper).save(company);
 

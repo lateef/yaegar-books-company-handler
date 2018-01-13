@@ -17,7 +17,7 @@ configurations {
 }
 
 task integrationTest(type: Test) {
-    testClassesDir = sourceSets.integrationTest.output.classesDir
+    testClassesDirs = sourceSets.integrationTest.output
     classpath = sourceSets.integrationTest.runtimeClasspath
 
     // Gradle skips tasks whose input and output are up to date.
@@ -34,7 +34,7 @@ integrationTest.mustRunAfter test
 // Ensure that the HTML reports of unit and integration tests are created to different report
 // build/reports/integration-test directory contains the HTML report that contains the test results of our integration tests.
 tasks.withType(Test) {
-    reports.html.destination = file("${reporting.baseDir}/${name}")
+    reports.html.destination(file("${reporting.baseDir}/${name}"))
 }
 
 integrationTest {

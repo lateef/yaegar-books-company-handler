@@ -1,2 +1,3 @@
 rootProject.name = 'yaegar-books-company-handler'
+include 'stacks'
 
