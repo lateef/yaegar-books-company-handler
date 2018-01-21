@@ -61,7 +61,9 @@ make ENV=${env}
 
 stack_params="--stack-name ${stack_name}"
 
-template_path="--template-body file://build/${stack_name}.json"
+template_path="--template-body file://build/${stack_name}.json --capabilities CAPABILITY_IAM"
+
+apply_changes=true
 
 if [[ '' == ${stack_status} ]]; then
 	# Create stack
@@ -95,40 +97,63 @@ else
     if [[ "$?" -ne "0" ]]; then
         echo "Perhaps no changes to apply, exiting"
         aws cloudformation delete-change-set --change-set-name=${change_set_arn} &> /dev/null
-        exit 0
+
+        apply_changes=false
     fi
 
-    echo "Change set ${change_set_name} created for stack ${stack_name}";
+	if [[ ${apply_changes} = true ]]; then
 
-    stack_template=$(aws cloudformation get-template --stack-name ${stack_name} | jq -S .)
-    change_set_template=$(aws cloudformation get-template --change-set-name ${change_set_name} --stack-name ${stack_name} | jq -S .)
-    template_diff=$(diff --suppress-common-lines -u <(echo "${stack_template}") <(echo "${change_set_template}"))
+    	echo "Change set ${change_set_name} created for stack ${stack_name}";
 
-    stack_parameters=$(aws cloudformation describe-stacks --stack-name ${stack_name} |
-    jq -S '.Stacks[0].Parameters |= sort_by(.ParameterKey) | .Stacks[0].Parameters[]')
-    change_set_parameters=$(aws cloudformation describe-change-set --change-set-name ${change_set_name} --stack-name ${stack_name} |
-     jq -S '.Parameters |= sort_by(.ParameterKey) | .Parameters[]')
-    parameter_diff=$(diff --suppress-common-lines -u <(echo "${stack_parameters}") <(echo "${change_set_parameters}"))
+		stack_template=$(aws cloudformation get-template --stack-name ${stack_name} | jq -S .)
+		change_set_template=$(aws cloudformation get-template --change-set-name ${change_set_name} --stack-name ${stack_name} | jq -S .)
+		template_diff=$(diff --suppress-common-lines -u <(echo "${stack_template}") <(echo "${change_set_template}"))
 
-    echo "Applying the following changes:"
+		stack_parameters=$(aws cloudformation describe-stacks --stack-name ${stack_name} |
+		jq -S '.Stacks[0].Parameters |= sort_by(.ParameterKey) | .Stacks[0].Parameters[]')
+		change_set_parameters=$(aws cloudformation describe-change-set --change-set-name ${change_set_name} --stack-name ${stack_name} |
+		 jq -S '.Parameters |= sort_by(.ParameterKey) | .Parameters[]')
+		parameter_diff=$(diff --suppress-common-lines -u <(echo "${stack_parameters}") <(echo "${change_set_parameters}"))
 
-    if [[ "$template_diff" != "" ]]; then
-        echo "Template:"
-        echo ${template_diff}
-    fi
+		echo "Applying the following changes:"
 
-    if [[ "$template_diff" != "" ]]; then
-        echo "Parameters:"
-        echo ${parameter_diff}
-    fi
+		if [[ "$template_diff" != "" ]]; then
+			echo "Template:"
+			echo ${template_diff}
+		fi
 
-    aws cloudformation execute-change-set --change-set-name ${change_set_arn}
+		if [[ "$template_diff" != "" ]]; then
+			echo "Parameters:"
+			echo ${parameter_diff}
+		fi
 
-    aws cloudformation wait stack-update-complete ${stack_params}
-    if [[ "$?" -ne 0 ]]; then
-        echo "ERROR: Failed to update ${stack_name} with change set ${change_set_name}";
-        exit 1;
-    fi
+		aws cloudformation execute-change-set --change-set-name ${change_set_arn}
+
+		aws cloudformation wait stack-update-complete ${stack_params}
+		if [[ "$?" -ne 0 ]]; then
+			echo "ERROR: Failed to update ${stack_name} with change set ${change_set_name}";
+			exit 1;
+		fi
+     fi
 fi
 
-echo "Successfully created stack ${stack_name}";
+lowerEnv=`echo ${env} | tr '[:upper:]' '[:lower:]'`
+config_file="../src/main/resources/config/${lowerEnv}.json"
+cd ../src/main/resources/config
+config_content=`cat "${lowerEnv}.json"`
+cd -
+
+if [ -z "${config_content}" ]; then
+	config_content="{}"
+fi
+
+table_name=$(aws cloudformation describe-stacks --stack-name ${stack_name} |
+jq -S '.Stacks[0].Outputs[] | select(.OutputKey=="TableName").OutputValue')
+
+echo ${config_content} | jq 'setpath(["environment"]; "int")' | jq 'setpath(["dynamodb", "yaegarBooksCompanyTable"]; '"${table_name}"')' > ${config_file}
+
+if [[ ${apply_changes} = true ]]; then
+	echo "Successfully created stack ${stack_name}";
+else
+	echo "No stack changes where applied";
+fi

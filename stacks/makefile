@@ -24,3 +24,9 @@ create-build-dir:
 
 clean-venv:
 	rm -fr $(VENV_DIR)
+
+apply-stacks:
+	./apply-stacks.sh -e $(ENV)
+
+upload-to-s3:
+	./upload-to-s3.sh

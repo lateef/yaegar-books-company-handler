@@ -1,5 +1,5 @@
 {
-  "Int": "YaegarBooksCompanyInt",
-  "Test": "YaegarBooksCompanyTest",
-  "Live": "YaegarBooksCompanyLive"
+  "Int": "IntYaegarBooksCompany",
+  "Test": "TestYaegarBooksCompany",
+  "Live": "LiveYaegarBooksCompany"
 }

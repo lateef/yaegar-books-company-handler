@@ -1,0 +1,8 @@
+{
+  "app": {
+    "environment": "test"
+  },
+  "dynamodb": {
+    "yaegarBooksCompanyTable": "CompanyTable"
+  }
+}

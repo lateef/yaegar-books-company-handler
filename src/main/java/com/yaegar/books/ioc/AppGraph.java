@@ -2,6 +2,12 @@ package com.yaegar.books.ioc;
 
 import dagger.Component;
 
-@Component(modules = AppModule.class)
+import javax.inject.Singleton;
+
+@Singleton
+@Component(modules = {
+        CommonModule.class,
+        AppModule.class
+})
 public interface AppGraph extends Graph {
 }

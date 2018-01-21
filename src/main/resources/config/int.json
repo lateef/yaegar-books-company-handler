@@ -1,0 +1,9 @@
+{
+  "app": {
+    "environment": "int"
+  },
+  "dynamodb": {
+    "yaegarBooksCompanyTable": "IntYaegarBooksCompany-IntYaegarBooksCompanyTable-W4CEJ6QLNSNN"
+  },
+  "environment": "int"
+}
