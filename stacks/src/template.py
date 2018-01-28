@@ -14,7 +14,7 @@ t = Template(COMPONENT_NAME)
 
 t.add_version("2010-09-09")
 
-shared_resources_bucket = "intyaegarbookssharedresou-s3bucketsharedresources-17imna8ju1kby"
+shared_resources_bucket = "sharedbucketsintyaegarboo-s3bucketsharedresources-boencsukew48"
 shared_resources_bucket_arn = "arn:aws:s3:::" + shared_resources_bucket
 
 t.add_description(COMPONENT_NAME + " stacks")
