@@ -73,10 +73,11 @@ public class CompanyPersistHandlerSteps {
         amazonDynamoDB.deleteTable(deleteTableRequest);
     }
 
-    @Given("^a request to save company with name (\\w+) is received$")
-    public void aRequestToSaveCompanyWithNameIsReceived(String name) throws Throwable {
+    @Given("^a request to save company with name (\\w+) and principal (\\w+) is received$")
+    public void aRequestToSaveCompanyWithNameYaegarAndPrincipalIsReceived(String name, String principal) throws Throwable {
         expectedCompany = new Company();
         expectedCompany.setName(name);
+        expectedCompany.setPrincipal(principal);
     }
 
     @When("^the lambda is triggered$")
