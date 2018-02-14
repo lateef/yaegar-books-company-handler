@@ -46,7 +46,7 @@ public class CompanyDaoImplTest {
         expectedException.expect(NullPointerException.class);
         expectedException.expectMessage("Company name cannot be null");
 
-        company.setNameAndPrincipal();
+        company.setPrincipalAndName(null);
     }
 
     @Test
@@ -58,7 +58,7 @@ public class CompanyDaoImplTest {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Company name cannot be empty");
 
-        company.setNameAndPrincipal();
+        company.setPrincipalAndName(null);
     }
 
     @Test
@@ -69,7 +69,7 @@ public class CompanyDaoImplTest {
         expectedException.expect(NullPointerException.class);
         expectedException.expectMessage("Company principal cannot be null");
 
-        company.setNameAndPrincipal();
+        company.setPrincipalAndName(null);
     }
 
     @Test
@@ -81,7 +81,7 @@ public class CompanyDaoImplTest {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Company principal cannot be empty");
 
-        company.setNameAndPrincipal();
+        company.setPrincipalAndName(null);
     }
 
     @Test
@@ -89,7 +89,7 @@ public class CompanyDaoImplTest {
         //arrange
         company.setName(name);
         company.setPrincipal(principal);
-        company.setNameAndPrincipal();
+        company.setPrincipalAndName(null);
         when(builder.withTableNameOverride(any())).thenReturn(builder);
         when(builder.build()).thenReturn(dynamoDBMapperConfig);
         doNothing().when(dynamoDBMapper).save(company, dynamoDBMapperConfig);

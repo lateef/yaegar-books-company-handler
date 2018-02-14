@@ -32,6 +32,7 @@ public class CompanyPersistHandlerSteps {
     private DynamoDBMapper dynamoDBMapper;
     private Company expectedCompany;
     private String uuid;
+    private String principalAndName;
     private final Context context = getContext();
 
     private CompanyPersistHandler sut;
@@ -78,18 +79,20 @@ public class CompanyPersistHandlerSteps {
         expectedCompany = new Company();
         expectedCompany.setName(name);
         expectedCompany.setPrincipal(principal);
+        expectedCompany.setPrincipalAndName(null);
     }
 
     @When("^the lambda is triggered$")
     public void theLambdaIsTriggered() throws Throwable {
         Company actualCompany = sut.handleRequest(expectedCompany, context);
         uuid = actualCompany.getUuid();
+        principalAndName = actualCompany.getPrincipalAndName();
     }
 
-    @Then("^the company with uuid and name (\\w+) is saved in the database$")
-    public void theCompanyWithNameIsSavedInTheDatabase(String expectedName) throws Throwable {
-        Company actualCompany = dynamoDBMapper.load(Company.class, uuid, expectedName, dynamoDBMapperConfig);
-        assertEquals(expectedName, actualCompany.getName());
+    @Then("^the company with uuid and nameAndPrincipal is saved in the database$")
+    public void theCompanyWithNameAndPrincipalIsSavedInTheDatabase() throws Throwable {
+        Company actualCompany = dynamoDBMapper.load(Company.class, uuid, principalAndName, dynamoDBMapperConfig);
+        assertEquals(principalAndName, actualCompany.getPrincipalAndName());
         assertEquals(expectedCompany.getUuid(), actualCompany.getUuid());
     }
 

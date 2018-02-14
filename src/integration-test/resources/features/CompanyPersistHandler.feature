@@ -3,4 +3,4 @@ Feature: Company CRUD
   Scenario: Save a company request
     Given a request to save company with name Yaegar and principal principaluuid is received
     When the lambda is triggered
-    Then the company with uuid and name Yaegar is saved in the database
+    Then the company with uuid and nameAndPrincipal is saved in the database

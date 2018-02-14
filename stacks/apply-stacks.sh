@@ -150,7 +150,7 @@ fi
 table_name=$(aws cloudformation describe-stacks --stack-name ${stack_name} |
 jq -S '.Stacks[0].Outputs[] | select(.OutputKey=="TableName").OutputValue')
 
-echo ${config_content} | jq 'setpath(["environment"]; '"${lowerEnv}"')' | jq 'setpath(["dynamodb", "yaegarBooksCompanyTable"]; '"${table_name}"')' > ${config_file}
+echo ${config_content} | jq 'setpath(["environment"]; '\"${lowerEnv}\"')' | jq 'setpath(["dynamodb", "yaegarBooksCompanyTable"]; '"${table_name}"')' > ${config_file}
 
 if [[ ${apply_changes} = true ]]; then
 	echo "Successfully created stack ${stack_name}";

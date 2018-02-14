@@ -36,6 +36,7 @@ public class CompanyPersistHandlerTest {
         Company expectedCompany = new Company();
         expectedCompany.setName("Yaegar");
         expectedCompany.setPrincipal("principal-uuid");
+        expectedCompany.setPrincipalAndName(null);
 
         CompanyPersistHandler sut = new CompanyPersistHandler(graph);
         when(context.getLogger()).thenReturn(lambdaLogger);
