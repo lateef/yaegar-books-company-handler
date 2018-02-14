@@ -1,9 +1,6 @@
 {
-  "app": {
-    "environment": "int"
-  },
+  "environment": "int",
   "dynamodb": {
-    "yaegarBooksCompanyTable": "IntYaegarBooksCompany-IntYaegarBooksCompanyTable-W4CEJ6QLNSNN"
-  },
-  "environment": "int"
+    "yaegarBooksCompanyTable": "IntYaegarBooksCompany-IntYaegarBooksCompanyTable-KMUXWHUF6SQ6"
+  }
 }

@@ -8,10 +8,10 @@ import java.util.Objects;
 
 @DynamoDBTable(tableName = "Company")
 public class Company {
-    private String name;
     private String uuid;
+    private String name;
     private String principal;
-    private String nameAndPrincipal;
+    private String principalAndName;
 
     @DynamoDBHashKey
     public String getUuid() {
@@ -22,24 +22,6 @@ public class Company {
         this.uuid = uuid;
     }
 
-    @DynamoDBRangeKey
-    public String getNameAndPrincipal() {
-        return nameAndPrincipal;
-    }
-
-    public void setNameAndPrincipal() {
-        Objects.requireNonNull(name, "Company name cannot be null");
-        if (name.trim().length() == 0) {
-            throw new IllegalArgumentException("Company name cannot be empty");
-        }
-
-        Objects.requireNonNull(principal, "Company principal cannot be null");
-        if (principal.trim().length() == 0) {
-            throw new IllegalArgumentException("Company principal cannot be empty");
-        }
-
-        this.nameAndPrincipal = name + "." + principal;
-    }
     public String getName() {
         return name;
     }
@@ -56,11 +38,34 @@ public class Company {
         this.principal = principal;
     }
 
+    @DynamoDBRangeKey
+    public String getPrincipalAndName() {
+        return principalAndName;
+    }
+
+    public void setPrincipalAndName(String principalAndName) {
+        if (principalAndName == null || principalAndName.isEmpty()) {
+            Objects.requireNonNull(name, "Company name cannot be null");
+            if (name.trim().length() == 0) {
+                throw new IllegalArgumentException("Company name cannot be empty");
+            }
+
+            Objects.requireNonNull(principal, "Company principal cannot be null");
+            if (principal.trim().length() == 0) {
+                throw new IllegalArgumentException("Company principal cannot be empty");
+            }
+
+            this.principalAndName = principal + "." + name.toLowerCase();
+        } else {
+            this.principalAndName = principalAndName;
+        }
+    }
+
     @Override
-    public String   toString() {
+    public String toString() {
         return "Company{" +
-                "name='" + name + '\'' +
-                ", uuid='" + uuid + '\'' +
+                "uuid='" + uuid + '\'' +
+                ", name='" + name + '\'' +
                 ", principal='" + principal + '\'' +
                 '}';
     }
