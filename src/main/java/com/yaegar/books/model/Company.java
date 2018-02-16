@@ -10,8 +10,8 @@ import java.util.Objects;
 public class Company {
     private String uuid;
     private String name;
-    private String principal;
-    private String principalAndName;
+    private String administrator;
+    private String administratorAndName;
 
     @DynamoDBHashKey
     public String getUuid() {
@@ -30,34 +30,34 @@ public class Company {
         this.name = name;
     }
 
-    public String getPrincipal() {
-        return principal;
+    public String getAdministrator() {
+        return administrator;
     }
 
-    public void setPrincipal(String principal) {
-        this.principal = principal;
+    public void setAdministrator(String administrator) {
+        this.administrator = administrator;
     }
 
     @DynamoDBRangeKey
-    public String getPrincipalAndName() {
-        return principalAndName;
+    public String getAdministratorAndName() {
+        return administratorAndName;
     }
 
-    public void setPrincipalAndName(String principalAndName) {
-        if (principalAndName == null || principalAndName.isEmpty()) {
+    public void setAdministratorAndName(String administratorAndName) {
+        if (administratorAndName == null || administratorAndName.isEmpty()) {
             Objects.requireNonNull(name, "Company name cannot be null");
             if (name.trim().length() == 0) {
                 throw new IllegalArgumentException("Company name cannot be empty");
             }
 
-            Objects.requireNonNull(principal, "Company principal cannot be null");
-            if (principal.trim().length() == 0) {
+            Objects.requireNonNull(administrator, "Company principal cannot be null");
+            if (administrator.trim().length() == 0) {
                 throw new IllegalArgumentException("Company principal cannot be empty");
             }
 
-            this.principalAndName = principal + "." + name.toLowerCase();
+            this.administratorAndName = administrator + "." + name.toLowerCase();
         } else {
-            this.principalAndName = principalAndName;
+            this.administratorAndName = administratorAndName;
         }
     }
 
@@ -66,7 +66,7 @@ public class Company {
         return "Company{" +
                 "uuid='" + uuid + '\'' +
                 ", name='" + name + '\'' +
-                ", principal='" + principal + '\'' +
+                ", administrator='" + administrator + '\'' +
                 '}';
     }
 }

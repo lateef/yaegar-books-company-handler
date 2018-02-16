@@ -1,6 +1,6 @@
 {
   "environment": "int",
   "dynamodb": {
-    "yaegarBooksCompanyTable": "IntYaegarBooksCompany-IntYaegarBooksCompanyTable-KMUXWHUF6SQ6"
+    "yaegarBooksCompanyTable": "IntYaegarBooksCompany-IntYaegarBooksCompanyTable-1LGXQYJNR4ERR"
   }
 }

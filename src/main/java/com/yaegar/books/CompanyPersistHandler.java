@@ -26,7 +26,7 @@ public class CompanyPersistHandler implements RequestHandler<Company, Company> {
     public Company handleRequest(Company company, Context context) {
         context.getLogger().log("Received Company: " + company);
 
-        company.setPrincipalAndName(null);
+        company.setAdministratorAndName(null);
 
         String tableName = getProperty();
         graph.getCompanyDao().save(company, graph.getBuilder(), tableName);
