@@ -32,7 +32,7 @@ public class CompanyPersistHandlerSteps {
     private DynamoDBMapper dynamoDBMapper;
     private Company expectedCompany;
     private String uuid;
-    private String principalAndName;
+    private String administratorAndName;
     private final Context context = getContext();
 
     private CompanyPersistHandler sut;
@@ -75,24 +75,23 @@ public class CompanyPersistHandlerSteps {
     }
 
     @Given("^a request to save company with name (\\w+) and principal (\\w+) is received$")
-    public void aRequestToSaveCompanyWithNameYaegarAndPrincipalIsReceived(String name, String principal) throws Throwable {
+    public void aRequestToSaveCompanyWithNameYaegarAndPrincipalIsReceived(String name, String administrator) throws Throwable {
         expectedCompany = new Company();
         expectedCompany.setName(name);
-        expectedCompany.setPrincipal(principal);
-        expectedCompany.setPrincipalAndName(null);
+        expectedCompany.setAdministrator(administrator);
     }
 
     @When("^the lambda is triggered$")
     public void theLambdaIsTriggered() throws Throwable {
         Company actualCompany = sut.handleRequest(expectedCompany, context);
         uuid = actualCompany.getUuid();
-        principalAndName = actualCompany.getPrincipalAndName();
+        administratorAndName = actualCompany.getAdministratorAndName();
     }
 
-    @Then("^the company with uuid and nameAndPrincipal is saved in the database$")
-    public void theCompanyWithNameAndPrincipalIsSavedInTheDatabase() throws Throwable {
-        Company actualCompany = dynamoDBMapper.load(Company.class, uuid, principalAndName, dynamoDBMapperConfig);
-        assertEquals(principalAndName, actualCompany.getPrincipalAndName());
+    @Then("^the company with uuid and administratorAndName is saved in the database$")
+    public void theCompanyWithNameAndAdministratorIsSavedInTheDatabase() throws Throwable {
+        Company actualCompany = dynamoDBMapper.load(Company.class, uuid, administratorAndName, dynamoDBMapperConfig);
+        assertEquals(administratorAndName, actualCompany.getAdministratorAndName());
         assertEquals(expectedCompany.getUuid(), actualCompany.getUuid());
     }
 

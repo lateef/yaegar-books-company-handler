@@ -26,7 +26,7 @@ public class CompanyDaoImplTest {
 
     private CompanyDao companyDao;
     private final String name = "Yaegar";
-    private final String principal = "principal-uuid";
+    private final String administrator = "principal-uuid";
     private Company company;
 
     @Rule
@@ -41,24 +41,24 @@ public class CompanyDaoImplTest {
     @Test
     public void shouldThrowExceptionWhenCompanyNameIsNull() {
         //arrange
-        company.setPrincipal(principal);
+        company.setAdministrator(administrator);
 
         expectedException.expect(NullPointerException.class);
         expectedException.expectMessage("Company name cannot be null");
 
-        company.setPrincipalAndName(null);
+        company.setAdministratorAndName(null);
     }
 
     @Test
     public void shouldThrowExceptionWhenCompanyNameIsEmpty() {
         //arrange
         company.setName("");
-        company.setPrincipal(principal);
+        company.setAdministrator(administrator);
 
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Company name cannot be empty");
 
-        company.setPrincipalAndName(null);
+        company.setAdministratorAndName(null);
     }
 
     @Test
@@ -69,27 +69,27 @@ public class CompanyDaoImplTest {
         expectedException.expect(NullPointerException.class);
         expectedException.expectMessage("Company principal cannot be null");
 
-        company.setPrincipalAndName(null);
+        company.setAdministratorAndName(null);
     }
 
     @Test
     public void shouldThrowExceptionWhenCompanyPrincipalIsEmpty() {
         //arrange
-        company.setPrincipal("");
+        company.setAdministrator("");
         company.setName(name);
 
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Company principal cannot be empty");
 
-        company.setPrincipalAndName(null);
+        company.setAdministratorAndName(null);
     }
 
     @Test
     public void shouldSaveCompany() {
         //arrange
         company.setName(name);
-        company.setPrincipal(principal);
-        company.setPrincipalAndName(null);
+        company.setAdministrator(administrator);
+        company.setAdministratorAndName(null);
         when(builder.withTableNameOverride(any())).thenReturn(builder);
         when(builder.build()).thenReturn(dynamoDBMapperConfig);
         doNothing().when(dynamoDBMapper).save(company, dynamoDBMapperConfig);

@@ -28,7 +28,7 @@ companyTable = t.add_resource(
                 AttributeType="S"
             ),
             AttributeDefinition(
-                AttributeName="principalAndName",
+                AttributeName="administratorAndName",
                 AttributeType="S"
             )
         ],
@@ -38,7 +38,7 @@ companyTable = t.add_resource(
                 KeyType="HASH"
             ),
             KeySchema(
-                AttributeName="principalAndName",
+                AttributeName="administratorAndName",
                 KeyType="RANGE"
             )
         ],
