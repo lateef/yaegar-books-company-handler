@@ -13,6 +13,7 @@ import com.amazonaws.services.lambda.runtime.ClientContext;
 import com.amazonaws.services.lambda.runtime.CognitoIdentity;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yaegar.books.CompanyPersistHandler;
 import com.yaegar.books.model.Company;
 import cucumber.api.java.After;
@@ -23,6 +24,15 @@ import cucumber.api.java.en.When;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.Collections;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import static org.junit.Assert.assertEquals;
 
 public class CompanyPersistHandlerSteps {
@@ -31,12 +41,12 @@ public class CompanyPersistHandlerSteps {
     private AmazonDynamoDB amazonDynamoDB;
     private DynamoDBMapper dynamoDBMapper;
     private Company expectedCompany;
-    private String uuid;
-    private String administratorAndName;
+    private OutputStream output = new ByteArrayOutputStream();
     private final Context context = getContext();
 
     private CompanyPersistHandler sut;
     private DynamoDBMapperConfig dynamoDBMapperConfig;
+    private ObjectMapper objectMapper;
 
     @Before
     public void setUp() {
@@ -44,6 +54,7 @@ public class CompanyPersistHandlerSteps {
 
         amazonDynamoDB = graph.getAmazonDynamoDB();
         dynamoDBMapper = graph.getDynamoDBMapper();
+        objectMapper = graph.getObjectMapper();
 
         String tableName = graph.getConfig().getString("dynamodb.yaegarBooksCompanyTable");
 
@@ -83,16 +94,24 @@ public class CompanyPersistHandlerSteps {
 
     @When("^the lambda is triggered$")
     public void theLambdaIsTriggered() throws Throwable {
-        Company actualCompany = sut.handleRequest(expectedCompany, context);
-        uuid = actualCompany.getUuid();
-        administratorAndName = actualCompany.getAdministratorAndName();
+        Map<String, Object> body = Collections.singletonMap("company", expectedCompany);
+
+        Map<String, Object> requestMap = Collections.unmodifiableMap(Stream.of(
+                new SimpleEntry<>("request_method", "POST"),
+                new SimpleEntry<>("body", body)
+        ).collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue)));
+
+        sut.handleRequest(new ByteArrayInputStream(objectMapper.writeValueAsString(requestMap).getBytes()), output, context);
     }
 
     @Then("^the company with uuid and administratorAndName is saved in the database$")
     public void theCompanyWithNameAndAdministratorIsSavedInTheDatabase() throws Throwable {
-        Company actualCompany = dynamoDBMapper.load(Company.class, uuid, administratorAndName, dynamoDBMapperConfig);
-        assertEquals(administratorAndName, actualCompany.getAdministratorAndName());
-        assertEquals(expectedCompany.getUuid(), actualCompany.getUuid());
+        Company returnCompany = objectMapper.readValue(output.toString(), Company.class);
+
+        Company actualCompany = dynamoDBMapper.load(
+                Company.class, returnCompany.getUuid(), returnCompany.getAdministratorAndName(), dynamoDBMapperConfig);
+        assertEquals(returnCompany.getAdministratorAndName(), actualCompany.getAdministratorAndName());
+        assertEquals(returnCompany.getUuid(), actualCompany.getUuid());
     }
 
     private Context getContext() {

@@ -46,7 +46,37 @@ companyTable = t.add_resource(
             ReadCapacityUnits=1,
             WriteCapacityUnits=1
         ),
-    )
+        )
+)
+
+companyTableAN = t.add_resource(
+    Table(
+        COMPONENT_NAME + "TableAN",
+        AttributeDefinitions=[
+            AttributeDefinition(
+                AttributeName="administratorAndName",
+                AttributeType="S"
+            ),
+            AttributeDefinition(
+                AttributeName="uuid",
+                AttributeType="S"
+            )
+        ],
+        KeySchema=[
+            KeySchema(
+                AttributeName="administratorAndName",
+                KeyType="HASH"
+            ),
+            KeySchema(
+                AttributeName="uuid",
+                KeyType="RANGE"
+            )
+        ],
+        ProvisionedThroughput=ProvisionedThroughput(
+            ReadCapacityUnits=1,
+            WriteCapacityUnits=1
+        ),
+        )
 )
 
 companyRole = t.add_resource(
@@ -108,6 +138,13 @@ companyRole = t.add_resource(
                             ]
                         ),
                         Statement(
+                            Effect=Allow,
+                            Action=[GetItem, PutItem, Query, UpdateItem],
+                            Resource=[
+                                GetAtt(companyTableAN, "Arn")
+                            ]
+                        ),
+                        Statement(
                             Effect="Allow",
                             Action=[Action("logs", "*")],
                             Resource=["arn:aws:logs:*:*:*"]
@@ -144,6 +181,14 @@ t.add_output([
     Output(
         "TableName",
         Value=Ref(companyTable),
+        Description="Table name for company",
+    )
+])
+
+t.add_output([
+    Output(
+        "TableNameAN",
+        Value=Ref(companyTableAN),
         Description="Table name for company",
     )
 ])
