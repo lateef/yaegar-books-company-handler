@@ -3,6 +3,7 @@ package com.yaegar.books;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.Builder;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.typesafe.config.Config;
 import com.yaegar.books.dao.CompanyDao;
 import com.yaegar.books.ioc.Graph;
@@ -11,6 +12,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.mockito.Mockito.*;
 
@@ -36,19 +46,30 @@ public class CompanyPersistHandlerTest {
         Company expectedCompany = new Company();
         expectedCompany.setName("Yaegar");
         expectedCompany.setAdministrator("principal-uuid");
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, Object> body = Collections.singletonMap("company", expectedCompany);
+
+        Map<String, Object> requestMap = Collections.unmodifiableMap(Stream.of(
+                new AbstractMap.SimpleEntry<>("request_method", "POST"),
+                new AbstractMap.SimpleEntry<>("body", body)
+        ).collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue)));
 
         CompanyPersistHandler sut = new CompanyPersistHandler(graph);
+        when(graph.getObjectMapper()).thenReturn(objectMapper);
         when(context.getLogger()).thenReturn(lambdaLogger);
-        doNothing().when(lambdaLogger).log("Received Company: " + expectedCompany);
         when(graph.getCompanyDao()).thenReturn(companyDao);
         when(graph.getBuilder()).thenReturn(builder);
         when(graph.getConfig()).thenReturn(config);
         when(config.getString("dynamodb.yaegarBooksCompanyTable")).thenReturn(tableName);
 
         //act
-        sut.handleRequest(expectedCompany, context);
+        try {
+            sut.handleRequest(new ByteArrayInputStream(objectMapper.writeValueAsString(requestMap).getBytes()), new ByteArrayOutputStream(), context);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         //assert
-        verify(companyDao, times(1)).save(expectedCompany, builder, tableName);
+        verify(companyDao, times(1)).save(any(), eq(builder), eq(tableName));
     }
 }

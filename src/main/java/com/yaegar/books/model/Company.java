@@ -55,7 +55,7 @@ public class Company {
                 throw new IllegalArgumentException("Company principal cannot be empty");
             }
 
-            this.administratorAndName = administrator + "." + name.toLowerCase();
+            this.administratorAndName = administrator + "." + name.replace(" ", "").toLowerCase();
         } else {
             this.administratorAndName = administratorAndName;
         }
