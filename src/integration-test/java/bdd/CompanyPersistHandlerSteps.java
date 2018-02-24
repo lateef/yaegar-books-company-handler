@@ -16,6 +16,7 @@ import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yaegar.books.CompanyPersistHandler;
 import com.yaegar.books.model.Company;
+import com.yaegar.books.model.Country;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
@@ -27,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
+import java.time.MonthDay;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Collections;
 import java.util.Map;
@@ -90,6 +92,9 @@ public class CompanyPersistHandlerSteps {
         expectedCompany = new Company();
         expectedCompany.setName(name);
         expectedCompany.setAdministrator(administrator);
+        expectedCompany.setCountry(new Country());
+        expectedCompany.setIndustry("Services");
+        expectedCompany.setFinancialYearEnd(MonthDay.of(6, 30));
     }
 
     @When("^the lambda is triggered$")

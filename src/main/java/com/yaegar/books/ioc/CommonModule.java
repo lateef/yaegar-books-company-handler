@@ -16,7 +16,7 @@ public class CommonModule {
     @Singleton
     @Provides
     static ObjectMapper provideObjectMapper() {
-        return new ObjectMapper();
+        return new ObjectMapper().findAndRegisterModules();
     }
 
     @Singleton
