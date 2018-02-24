@@ -8,6 +8,7 @@ import com.typesafe.config.Config;
 import com.yaegar.books.dao.CompanyDao;
 import com.yaegar.books.ioc.Graph;
 import com.yaegar.books.model.Company;
+import com.yaegar.books.model.Country;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -16,6 +17,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.MonthDay;
 import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.Map;
@@ -46,7 +48,10 @@ public class CompanyPersistHandlerTest {
         Company expectedCompany = new Company();
         expectedCompany.setName("Yaegar");
         expectedCompany.setAdministrator("principal-uuid");
-        ObjectMapper objectMapper = new ObjectMapper();
+        expectedCompany.setCountry(new Country());
+        expectedCompany.setIndustry("Services");
+        expectedCompany.setFinancialYearEnd(MonthDay.of(6, 30));
+        ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
         Map<String, Object> body = Collections.singletonMap("company", expectedCompany);
 
         Map<String, Object> requestMap = Collections.unmodifiableMap(Stream.of(

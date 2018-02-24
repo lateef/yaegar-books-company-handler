@@ -3,7 +3,11 @@ package com.yaegar.books.model;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverted;
+import com.yaegar.books.model.converter.dynamodb.CountryConverter;
+import com.yaegar.books.model.converter.dynamodb.MonthDayConverter;
 
+import java.time.MonthDay;
 import java.util.Objects;
 
 @DynamoDBTable(tableName = "Company")
@@ -12,6 +16,9 @@ public class Company {
     private String name;
     private String administrator;
     private String administratorAndName;
+    private Country country;
+    private String industry;
+    private MonthDay financialYearEnd;
 
     @DynamoDBHashKey
     public String getUuid() {
@@ -36,6 +43,32 @@ public class Company {
 
     public void setAdministrator(String administrator) {
         this.administrator = administrator;
+    }
+
+    @DynamoDBTypeConverted(converter = CountryConverter.class)
+    public Country getCountry() {
+        return country;
+    }
+
+    public void setCountry(Country country) {
+        this.country = country;
+    }
+
+    public String getIndustry() {
+        return industry;
+    }
+
+    public void setIndustry(String industry) {
+        this.industry = industry;
+    }
+
+    @DynamoDBTypeConverted(converter = MonthDayConverter.class)
+    public MonthDay getFinancialYearEnd() {
+        return financialYearEnd;
+    }
+
+    public void setFinancialYearEnd(MonthDay financialYearEnd) {
+        this.financialYearEnd = financialYearEnd;
     }
 
     @DynamoDBRangeKey
@@ -67,6 +100,10 @@ public class Company {
                 "uuid='" + uuid + '\'' +
                 ", name='" + name + '\'' +
                 ", administrator='" + administrator + '\'' +
+                ", administratorAndName='" + administratorAndName + '\'' +
+                ", country=" + country +
+                ", industry='" + industry + '\'' +
+                ", financialYearEnd=" + financialYearEnd +
                 '}';
     }
 }
