@@ -1,11 +1,16 @@
 // IntegrationTest.................
+
+ext {
+    generatedSourcesDir = 'build/generated/source/apt/integrationTest'
+}
+
 sourceSets {
     integrationTest {
         java {
             compileClasspath += main.output + test.output
             runtimeClasspath += main.output + test.output
             srcDir file('src/integration-test/java')
-            srcDir file('build/generated/source/apt/integrationTest')
+            srcDir file(generatedSourcesDir)
         }
         resources.srcDir file('src/integration-test/resources')
     }
@@ -15,6 +20,13 @@ sourceSets {
 configurations {
     integrationTestCompile.extendsFrom testCompile
     integrationTestRuntime.extendsFrom testRuntime
+}
+
+tasks.withType(JavaCompile) {
+    if (file(generatedSourcesDir).exists()) {
+        FileCollection collection = files { file(generatedSourcesDir).listFiles() }
+        collection.each { delete it }
+    }
 }
 
 task integrationTest(type: Test) {
