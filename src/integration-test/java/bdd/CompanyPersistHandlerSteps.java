@@ -94,7 +94,7 @@ public class CompanyPersistHandlerSteps {
         expectedCompany.setAdministrator(administrator);
         expectedCompany.setCountry(new Country());
         expectedCompany.setIndustry("Services");
-        expectedCompany.setFinancialYearEnd(MonthDay.of(6, 30));
+        expectedCompany.setFinancialYearEnd(MonthDay.of(6, 1));
     }
 
     @When("^the lambda is triggered$")
