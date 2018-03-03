@@ -9,6 +9,7 @@ import com.yaegar.books.dao.CompanyDao;
 import com.yaegar.books.ioc.Graph;
 import com.yaegar.books.model.Company;
 import com.yaegar.books.model.Country;
+import com.yaegar.books.model.Vat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -51,6 +52,7 @@ public class CompanyPersistHandlerTest {
         expectedCompany.setCountry(new Country());
         expectedCompany.setIndustry("Services");
         expectedCompany.setFinancialYearEnd(MonthDay.of(6, 30));
+        expectedCompany.setVat(new Vat());
         ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
         Map<String, Object> body = Collections.singletonMap("company", expectedCompany);
 
