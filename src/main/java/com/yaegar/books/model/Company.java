@@ -6,6 +6,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverted;
 import com.yaegar.books.model.converter.dynamodb.CountryConverter;
 import com.yaegar.books.model.converter.dynamodb.MonthDayConverter;
+import com.yaegar.books.model.converter.dynamodb.VatConverter;
 
 import java.time.MonthDay;
 import java.util.Objects;
@@ -19,6 +20,7 @@ public class Company {
     private Country country;
     private String industry;
     private MonthDay financialYearEnd;
+    private Vat vat;
 
     @DynamoDBHashKey
     public String getUuid() {
@@ -92,6 +94,15 @@ public class Company {
         } else {
             this.administratorAndName = administratorAndName;
         }
+    }
+
+    @DynamoDBTypeConverted(converter = VatConverter.class)
+    public Vat getVat() {
+        return vat;
+    }
+
+    public void setVat(Vat vat) {
+        this.vat = vat;
     }
 
     @Override

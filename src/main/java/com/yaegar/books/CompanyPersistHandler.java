@@ -38,7 +38,7 @@ public class CompanyPersistHandler implements RequestStreamHandler {
         context.getLogger().log("Received request and converted to json: " + jsonNode);
 
         Company company = objectMapper.treeToValue(jsonNode.get("body").get("company"), Company.class);
-        context.getLogger().log("Retrieved Company from json: " + company);
+            context.getLogger().log("Retrieved Company from json: " + company);
 
         company.setAdministratorAndName(null);
 
