@@ -21,7 +21,7 @@ t.add_description(COMPONENT_NAME + " stacks")
 
 companyTable = t.add_resource(
     Table(
-        COMPONENT_NAME + "Table",
+        "Table",
         AttributeDefinitions=[
             AttributeDefinition(
                 AttributeName="uuid",
@@ -51,7 +51,7 @@ companyTable = t.add_resource(
 
 companyTableAN = t.add_resource(
     Table(
-        COMPONENT_NAME + "TableAN",
+        "TableAN",
         AttributeDefinitions=[
             AttributeDefinition(
                 AttributeName="administratorAndName",
@@ -81,7 +81,7 @@ companyTableAN = t.add_resource(
 
 companyIndustryTable = t.add_resource(
     Table(
-        COMPONENT_NAME + "IndustryTable",
+        "IndustryTable",
         AttributeDefinitions=[
             AttributeDefinition(
                 AttributeName="uuid",
@@ -111,7 +111,7 @@ companyIndustryTable = t.add_resource(
 
 companyRole = t.add_resource(
     Role(
-        COMPONENT_NAME + "Role",
+        "Role",
         AssumeRolePolicyDocument=Policy(
             Version="2012-10-17",
             Statement=[
@@ -126,7 +126,7 @@ companyRole = t.add_resource(
         ),
         Policies=[
             iamPolicy(
-                PolicyName=COMPONENT_NAME + "Policy",
+                PolicyName="Policy",
                 PolicyDocument=Policy(
                     Statement=[
                         Statement(
@@ -188,7 +188,7 @@ companyRole = t.add_resource(
 
 companyLambda = t.add_resource(
     Function(
-        COMPONENT_NAME + "LambdaFunction",
+        "LambdaFunction",
         Handler="com.yaegar.books.CompanyHandler",
         Role=GetAtt(companyRole, "Arn"),
         Environment=Environment(
