@@ -14,7 +14,7 @@ import com.amazonaws.services.lambda.runtime.CognitoIdentity;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yaegar.books.CompanyPersistHandler;
+import com.yaegar.books.CompanyHandler;
 import com.yaegar.books.model.Company;
 import com.yaegar.books.model.Country;
 import cucumber.api.java.After;
@@ -46,7 +46,7 @@ public class CompanyPersistHandlerSteps {
     private OutputStream output = new ByteArrayOutputStream();
     private final Context context = getContext();
 
-    private CompanyPersistHandler sut;
+    private CompanyHandler sut;
     private DynamoDBMapperConfig dynamoDBMapperConfig;
     private ObjectMapper objectMapper;
 
@@ -77,7 +77,7 @@ public class CompanyPersistHandlerSteps {
             LOGGER.error("Could not get table name");
         }
 
-        sut = new CompanyPersistHandler(graph);
+        sut = new CompanyHandler(graph);
     }
 
     @After

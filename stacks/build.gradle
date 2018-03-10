@@ -1,5 +1,4 @@
 group 'com.yaegar.books'
-version '1.0.0-SNAPSHOT'
 
 task cleanStacks(type: Exec) {
     commandLine '/usr/bin/make'
@@ -19,7 +18,7 @@ task applyStacks(type: Exec) {
 
 task uploadToS3(type: Exec) {
     commandLine '/usr/bin/make'
-        args 'upload-to-s3'
+        args 'upload-to-s3', "filename=${rootProject.name}-${rootProject.version}.zip"
 }
 
 applyStacks.dependsOn("uploadToS3")

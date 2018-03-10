@@ -17,15 +17,15 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
-public class CompanyPersistHandler implements RequestStreamHandler {
-    private static final Logger LOGGER = LoggerFactory.getLogger(CompanyPersistHandler.class);
+public class CompanyHandler implements RequestStreamHandler {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CompanyHandler.class);
     private Graph graph;
 
-    public CompanyPersistHandler() {
+    public CompanyHandler() {
         graph = DaggerAppGraph.builder().build();
     }
 
-    public CompanyPersistHandler(Graph appGraph) {
+    public CompanyHandler(Graph appGraph) {
         this.graph = appGraph;
     }
 

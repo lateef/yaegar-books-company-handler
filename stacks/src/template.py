@@ -45,8 +45,8 @@ companyTable = t.add_resource(
         ProvisionedThroughput=ProvisionedThroughput(
             ReadCapacityUnits=1,
             WriteCapacityUnits=1
-        ),
         )
+    )
 )
 
 companyTableAN = t.add_resource(
@@ -76,7 +76,37 @@ companyTableAN = t.add_resource(
             ReadCapacityUnits=1,
             WriteCapacityUnits=1
         ),
+    )
+)
+
+companyIndustryTable = t.add_resource(
+    Table(
+        COMPONENT_NAME + "IndustryTable",
+        AttributeDefinitions=[
+            AttributeDefinition(
+                AttributeName="uuid",
+                AttributeType="S"
+            ),
+            AttributeDefinition(
+                AttributeName="industry",
+                AttributeType="S"
+            )
+        ],
+        KeySchema=[
+            KeySchema(
+                AttributeName="uuid",
+                KeyType="HASH"
+            ),
+            KeySchema(
+                AttributeName="industry",
+                KeyType="RANGE"
+            )
+        ],
+        ProvisionedThroughput=ProvisionedThroughput(
+            ReadCapacityUnits=1,
+            WriteCapacityUnits=1
         )
+    )
 )
 
 companyRole = t.add_resource(
@@ -159,7 +189,7 @@ companyRole = t.add_resource(
 companyLambda = t.add_resource(
     Function(
         COMPONENT_NAME + "LambdaFunction",
-        Handler="com.yaegar.books.CompanyPersistHandler",
+        Handler="com.yaegar.books.CompanyHandler",
         Role=GetAtt(companyRole, "Arn"),
         Environment=Environment(
             Variables={
@@ -172,7 +202,7 @@ companyLambda = t.add_resource(
         Timeout=300,
         Code=Code(
             S3Bucket=shared_resources_bucket,
-            S3Key="code/lambda/yaegar-books-company-handler-1.0.0-SNAPSHOT.zip"
+            S3Key="code/lambda/yaegar-books-company-handler-1.0.1-SNAPSHOT.zip"
         )
     )
 )
@@ -190,6 +220,14 @@ t.add_output([
         "TableNameAN",
         Value=Ref(companyTableAN),
         Description="Table name for company",
+    )
+])
+
+t.add_output([
+    Output(
+        "TableNameIndustry",
+        Value=Ref(companyIndustryTable),
+        Description="Table name for company industry",
     )
 ])
 

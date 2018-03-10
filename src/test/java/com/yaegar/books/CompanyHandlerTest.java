@@ -28,7 +28,7 @@ import java.util.stream.Stream;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class CompanyPersistHandlerTest {
+public class CompanyHandlerTest {
     @Mock
     private Context context;
     @Mock
@@ -61,7 +61,7 @@ public class CompanyPersistHandlerTest {
                 new AbstractMap.SimpleEntry<>("body", body)
         ).collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue)));
 
-        CompanyPersistHandler sut = new CompanyPersistHandler(graph);
+        CompanyHandler sut = new CompanyHandler(graph);
         when(graph.getObjectMapper()).thenReturn(objectMapper);
         when(context.getLogger()).thenReturn(lambdaLogger);
         when(graph.getCompanyDao()).thenReturn(companyDao);
