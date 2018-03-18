@@ -12,7 +12,7 @@ task genStacks(type: Exec) {
 task applyStacks(type: Exec) {
     commandLine '/usr/bin/make'
     if (project.hasProperty("env")) {
-        args 'apply-stacks', "ENV=$env"
+        args 'apply-stacks', "ENV=$env", "BUILD_VERSION=${rootProject.version}"
     }
 }
 

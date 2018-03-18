@@ -1,5 +1,6 @@
 VENV_DIR ?= venv
 BUILD_DIR ?= build
+BUILD_VERSION ?= build-version
 ENV ?= Int
 STACK_NAME ?= $(shell jq ".${ENV}" stack_names.json | tr -d '"')
 
@@ -26,7 +27,7 @@ clean-venv:
 	rm -fr $(VENV_DIR)
 
 apply-stacks:
-	./apply-stacks.sh -e $(ENV)
+	./apply-stacks.sh -e $(ENV) -v $(BUILD_VERSION)
 
 upload-to-s3:
 	./upload-to-s3.sh

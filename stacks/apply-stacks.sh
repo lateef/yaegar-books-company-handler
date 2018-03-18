@@ -2,26 +2,26 @@
 
 # Get environment or exit with error message
 envs="Local Int Test Live"
-valid_opt=false
 
 usage () {
-	echo "Usage: './apply-stack.sh -e <target environment>'";
+	echo "Usage: './apply-stack.sh -e <target environment> -v <build version>'";
 	echo "Example './apply-stack.sh -e Int'";
 	echo "Supported environments are ($envs)";
 	exit 1;
  }
 
-while getopts ":e:" opt; do
+while getopts ":e:v:" opt; do
 	case ${opt} in
 		e )
-			valid_opt=true;
-
 			if [[ ${envs} =~ (^|[[:space:]])$OPTARG($|[[:space:]]) ]]; then
 				env=$OPTARG;
 			else
 				echo "Invalid option argument: -$OPTARG" 1>&2;
 				usage;
 			fi
+		;;
+		v )
+			build_version=$OPTARG;
 		;;
 		\? )
 			echo "Invalid Option: -$OPTARG" 1>&2
@@ -39,7 +39,7 @@ while getopts ":e:" opt; do
 done
 shift $((OPTIND -1))
 
-if [[ ${valid_opt} = false ]]; then
+if [ -z ${env} ] || [ -z ${build_version} ]; then
 	echo "Missing argument";
 	usage;
 fi
@@ -56,18 +56,24 @@ if [[ ${stack_status} =~ "FAILED" ]]; then
 	exit 1;
 fi
 
+# Write build verison to parameter file
+parameter_content=`cat "parameters/${stack_name}.json"`
+
+echo ${parameter_content} | jq 'map((select(.ParameterKey == "BuildVersion") | .ParameterValue) |= '\"${build_version}\"')' > "tmp.json"
+mv "tmp.json" "parameters/${stack_name}.json"
+
 # Build the template
 make ENV=${env}
 
 stack_params="--stack-name ${stack_name}"
 
-template_path="--template-body file://build/${stack_name}.json --capabilities CAPABILITY_IAM"
+template_with_params="--template-body file://build/${stack_name}.json --parameters file://parameters/${stack_name}.json --capabilities CAPABILITY_IAM"
 
 apply_changes=true
 
 if [[ '' == ${stack_status} ]]; then
 	# Create stack
-	aws cloudformation create-stack ${stack_params} ${template_path}
+	aws cloudformation create-stack ${stack_params} ${template_with_params}
 	message=$(aws cloudformation wait stack-create-complete ${stack_params} &> /dev/null)
 	if [[ "$?" -ne 0 ]]; then
  		echo "Error: Failed to create ${stack_name}";
@@ -88,7 +94,7 @@ else
 	change_set_name=${stack_name}-$(date -u "+%Y-%m-%dT%H-%M-%SZ");
 	change_set_params="--change-set-name ${change_set_name}";
 
-	create_change_set_response=$(aws cloudformation create-change-set ${stack_params} ${template_path} ${change_set_params});
+	create_change_set_response=$(aws cloudformation create-change-set ${stack_params} ${template_with_params} ${change_set_params});
     change_set_arn="$(echo ${create_change_set_response} | jq '.Id' | tr -d '"')";
     echo "Creating change set ${change_set_name} for stack ${stack_name}";
 

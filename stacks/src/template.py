@@ -1,7 +1,7 @@
 import sys
 from awacs.aws import Policy, Statement, Allow, Principal, Action
 from awacs.dynamodb import GetItem, PutItem, Query, UpdateItem
-from troposphere import GetAtt, Join, Output, Parameter, Ref, Template
+from troposphere import awslambda, GetAtt, Join, Output, Parameter, Ref, Template
 from troposphere.dynamodb import Table, AttributeDefinition, ProvisionedThroughput, KeySchema
 from troposphere.awslambda import Function, Code, Environment
 from troposphere.iam import Role, Policy as iamPolicy
@@ -14,8 +14,9 @@ t = Template(COMPONENT_NAME)
 
 t.add_version("2010-09-09")
 
-shared_resources_bucket = "sharedbucketsintyaegarboo-s3bucketsharedresources-boencsukew48"
-shared_resources_bucket_arn = "arn:aws:s3:::" + shared_resources_bucket
+shared_resources_bucket = t.add_parameter(Parameter("SharedResourcesBucket", Type="String"))
+shared_resources_bucket_arn = t.add_parameter(Parameter("SharedResourcesBucketArn", Type="String"))
+build_version = t.add_parameter(Parameter("BuildVersion", Type="String"))
 
 t.add_description(COMPONENT_NAME + " stacks")
 
@@ -136,7 +137,7 @@ companyRole = t.add_resource(
                                 Action("s3", "List*")
                             ],
                             Resource=[
-                                shared_resources_bucket_arn,
+                                Ref(shared_resources_bucket_arn),
                             ]
                         ),
                         Statement(
@@ -157,7 +158,7 @@ companyRole = t.add_resource(
                                 Action("s3", "Delete*")
                             ],
                             Resource=[
-                                shared_resources_bucket_arn + "/*"
+                                Join("", [Ref(shared_resources_bucket_arn), "/*"])
                             ]
                         ),
                         Statement(
@@ -186,6 +187,12 @@ companyRole = t.add_resource(
     )
 )
 
+lambdaCode = awslambda.Code(
+    S3Bucket=Ref(shared_resources_bucket),
+    S3Key=Join("", ["code/lambda/yaegar-books-company-handler", "-",
+                    Ref(build_version), ".zip"])
+)
+
 companyLambda = t.add_resource(
     Function(
         COMPONENT_NAME + "LambdaFunction",
@@ -200,10 +207,7 @@ companyLambda = t.add_resource(
         Runtime="java8",
         MemorySize=512,
         Timeout=300,
-        Code=Code(
-            S3Bucket=shared_resources_bucket,
-            S3Key="code/lambda/yaegar-books-company-handler-1.0.1-SNAPSHOT.zip"
-        )
+        Code=lambdaCode
     )
 )
 
