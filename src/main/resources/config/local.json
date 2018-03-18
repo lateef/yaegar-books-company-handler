@@ -1,7 +1,7 @@
 {
   "dynamodb": {
-    "yaegarBooksCompanyTable": "LocalYaegarBooksCompany-LocalYaegarBooksCompanyTable-11N6Y2S3WCT3L",
-    "yaegarBooksCompanyTableAN": "LocalYaegarBooksCompany-LocalYaegarBooksCompanyTableAN-1LN1R1UP6E4K"
+    "yaegarBooksCompanyTable": "LocalYaegarBooksCompany-LocalYaegarBooksCompanyTable-CDV651XUY848",
+    "yaegarBooksCompanyTableAN": "LocalYaegarBooksCompany-LocalYaegarBooksCompanyTableAN-WYRNHB5PJWTH"
   },
   "environment": "local"
 }

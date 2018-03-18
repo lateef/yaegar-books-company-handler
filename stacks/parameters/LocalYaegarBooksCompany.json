@@ -1,0 +1,14 @@
+[
+  {
+    "ParameterKey": "SharedResourcesBucket",
+    "ParameterValue": "sharedbucketsintyaegarboo-s3bucketsharedresources-boencsukew48"
+  },
+  {
+    "ParameterKey": "SharedResourcesBucketArn",
+    "ParameterValue": "arn:aws:s3:::sharedbucketsintyaegarboo-s3bucketsharedresources-boencsukew48"
+  },
+  {
+    "ParameterKey": "BuildVersion",
+    "ParameterValue": "1.0.7-SNAPSHOT"
+  }
+]
